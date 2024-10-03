@@ -10,8 +10,10 @@ from langchain.retrievers.multi_vector import MultiVectorRetriever
 from unstructured.partition.padf import partition_pdf
 from airflow import DAG
 from airflow.operators.python_operator import Pythonoperator
+from transformers import BlipProcessor, BlipForConditionalGeneration
 from datetime import datetime
 from PIL import Image
+
 import os
 import nltk
 import base64
@@ -61,3 +63,44 @@ def extract_and_summarize_pdf():
         llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key = openai_api_key, max_tokens = 1024),
         prompt = PromptTemplate.from_template(summary_prompt)
     )
+
+    for e in raw_pdf_elements:
+        if 'CompositeElement' in repr(e):
+            text_elements.append(e.text)
+            summary = summary_chain.run({'element_type': 'text', 'element': e})
+            text_summarize.append(summary)
+        
+        elif 'Table' in repr(e):
+            table_elements.append(e)
+            summary = summary_chain.rin({'element_type' : 'table', 'element': e})
+            table_summarize.append(summary)
+
+    return table_summarize, text_summarize, table_elements, text_elements
+
+
+def simmarize_image():
+
+    processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+    model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
+
+    image_elements = []
+    image_summaries = []
+
+    for i in os.listdir(output_path):
+        if i.endwith('.png', '.jpg', '.jpeg'):
+            image_path = os.path.join(output_path, i)
+            image_elements.append(image_path)
+            raw_image = Image.open(image_path).convert('RGB')
+
+            inputs = processor(raw_image, return_tensor='pt')
+            out = model.generate(**inputs)
+            caption = processor.decode(out[0], skip_special_tokens = True)
+
+            prompt = f"You are an expert in analyzing images and charts related to Financial Planning. 
+                       Based on the following description, provide a detailed analysis:\n\nDescription: {caption}"
+            
+            response = ChatOpenAI(model='gpt-4', openai_api_key=openai_api_key, max_tokens=1024)
+            image_summaries.append(response.content)
+
+    return image_elements, image_summaries
+

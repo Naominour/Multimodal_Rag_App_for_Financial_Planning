@@ -3,3 +3,4 @@ __pycache__/
 airflow/
 venv/
 finacialplanning.pdf
+*.env
