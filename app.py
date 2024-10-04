@@ -1,11 +1,10 @@
 #Import dependencies
 from langchain_community.chat_models import ChatOpenAI
 from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_community.chain import LLMChain
-from langchain_community.prompts import PromptTemplate
-from langchain_community.shema.document import Document
-from langchain.schema_messages import HummanMessage, SystemMessage
-from langchain.vectorstores import FAISS
+from langchain.chains import LLMChain
+from langchain_core.prompts import PromptTemplate
+from langchain.schema.document import Document
+from langchain_community.vectorstores import FAISS
 from langchain.retrievers.multi_vector import MultiVectorRetriever
 from unstructured.partition.pdf import partition_pdf
 from airflow import DAG
@@ -96,8 +95,7 @@ def simmarize_image():
             out = model.generate(**inputs)
             caption = processor.decode(out[0], skip_special_tokens = True)
 
-            prompt = f"You are an expert in analyzing images and charts related to Financial Planning. 
-                       Based on the following description, provide a detailed analysis:\n\nDescription: {caption}"
+            prompt = f"You are an expert in analyzing images and charts related to Financial Planning. Based on the following description, provide a detailed analysis:\n\nDescription: {caption}"
             
             response = ChatOpenAI(model='gpt-4', openai_api_key=openai_api_key, max_tokens=1024)
             image_summaries.append(response.content)
