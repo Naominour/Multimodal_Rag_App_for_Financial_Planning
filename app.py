@@ -134,3 +134,16 @@ def create_documents(text_summaries, image_summaries, text_elements, image_eleme
     vectorstore = FAISS.from_documents(documents=documents, embedding= OpenAIEmbeddings(openai_api_key=openai_api_key))
 
     return vectorstore
+
+
+def answer_question(question, vectorstore):
+    prompt_template = """
+    You are a Vet Doctor and an expert in analyzing dog's health.
+    Answer the question based on the following answer, which can include text,
+    images, and tables:
+    {context}
+    Question: {question}
+    Don't answer if you are not sure and decline to answer and say "Sorry, I don't have much information about this"
+    Just return the helpful answer in as much detail as possible.
+    Answer:
+    """
