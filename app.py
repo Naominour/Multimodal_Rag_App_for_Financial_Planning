@@ -153,4 +153,29 @@ def answer_question(question, vectorstore):
         prompt = PromptTemplate.from_template(prompt_template)
     )
 
-    
+    relavent_docs = vectorstore.similarity_search(question)
+    context = ""
+    relevant_images = []
+
+    for i in relavent_docs:
+        if i.metadata['type'] == 'text':
+            context += ['text'] + i.metadata['original_content']
+        if i.metadata['type'] == 'image':
+            context += ['image'] + i.metadata['original_content']
+            relevant_images.append(i.metadata['original_content'])
+
+    result = qa_chain.run({'context': context, 'question': question})
+    return result, relevant_images
+
+
+if __name__ == "__main__":
+    text_elements, text_summaries, table_elements, table_summaries = extract_and_summarize_pdf()
+    image_elements, image_summaries = simmarize_image()
+    vectorstore = create_documents(text_elements, text_summaries, image_elements, image_summaries)
+
+    # Example usage of answering a question
+    question = "What is Gingivitis?"
+    result, relevant_images = answer_question(question, vectorstore)
+    print(result, relevant_images)
+
+
