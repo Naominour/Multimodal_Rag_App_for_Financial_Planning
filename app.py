@@ -138,7 +138,7 @@ def create_documents(text_summaries, image_summaries, text_elements, image_eleme
 
 def answer_question(question, vectorstore):
     prompt_template = """
-    You are a Vet Doctor and an expert in analyzing dog's health.
+    You are a Financial Planner and an expert in analyzing finance.
     Answer the question based on the following answer, which can include text,
     images, and tables:
     {context}
@@ -147,3 +147,10 @@ def answer_question(question, vectorstore):
     Just return the helpful answer in as much detail as possible.
     Answer:
     """
+
+    qa_chain = LLMChain(
+        llm = ChatOpenAI(model="gpt-4", openai_api_key=openai_api_key, max_tokens=1024),
+        prompt = PromptTemplate.from_template(prompt_template)
+    )
+
+    
