@@ -7,7 +7,7 @@ from langchain_community.shema.document import Document
 from langchain.schema_messages import HummanMessage, SystemMessage
 from langchain.vectorstores import FAISS
 from langchain.retrievers.multi_vector import MultiVectorRetriever
-from unstructured.partition.padf import partition_pdf
+from unstructured.partition.pdf import partition_pdf
 from airflow import DAG
 from airflow.operators.python_operator import Pythonoperator
 from transformers import BlipProcessor, BlipForConditionalGeneration
@@ -104,3 +104,33 @@ def simmarize_image():
 
     return image_elements, image_summaries
 
+
+def create_documents(text_summaries, image_summaries, text_elements, image_elements):
+    documents =[]
+    retrieve_content = []
+    
+    
+    for e, s in zip(text_elements, text_summaries):
+        i = str(uuid.uuid4())
+        docs = Document(
+            page_content = s,
+            metadata = {'id': i, 'type': 'text', 'original_content': e }
+        )
+
+    retrieve_content.append((i, e))
+    documents.append(docs)
+
+
+    for e, s in zip(image_elements, image_summaries):
+        i = str(uuid.uuid4())
+        docs = Document(
+            page_content = s,
+            metadata = {'id': i, 'type': 'image', 'original_content': e }
+        )
+
+    retrieve_content.append((i, e))
+    documents.append(docs)
+
+    vectorstore = FAISS.from_documents(documents=documents, embedding= OpenAIEmbeddings(openai_api_key=openai_api_key))
+
+    return vectorstore
