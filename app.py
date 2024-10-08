@@ -8,7 +8,6 @@ from langchain_community.vectorstores import FAISS
 from langchain.retrievers.multi_vector import MultiVectorRetriever
 from unstructured.partition.pdf import partition_pdf
 from airflow import DAG
-from airflow.operators.python_operator import Pythonoperator
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from datetime import datetime
 from PIL import Image
@@ -172,7 +171,7 @@ if __name__ == "__main__":
     vectorstore = create_documents(text_elements, text_summaries, image_elements, image_summaries)
 
     # Example usage of answering a question
-    question = "What is Gingivitis?"
+    question = ""
     result, relevant_images = answer_question(question, vectorstore)
     print(result, relevant_images)
 
