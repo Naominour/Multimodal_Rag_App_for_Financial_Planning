@@ -5,7 +5,7 @@ This is a **Generative AI** project designed to make it easier to understand and
 
 <img src="image\finance.jpg" style="width:1000px;">
 
-![Retrieval-Augmented Generation-RAG](https://img.shields.io/badge/Skill-Retrieval-Augmented%20Generation%20(RAG)-yellow)
+![Retrieval-Augmented Generation(RAG)](https://img.shields.io/badge/Skill-Retrieval-Augmented%20Generation%20RAG-yellow)
 ![Langchain](https://img.shields.io/badge/Skill-Langchain-blueviolet)
 ![Python](https://img.shields.io/badge/Skill-Python-orange)
 ![Generative AI](https://img.shields.io/badge/Skill-Generative%20AI-green)
