@@ -7,7 +7,6 @@ from langchain.schema.document import Document
 from langchain_community.vectorstores import FAISS
 from langchain.retrievers.multi_vector import MultiVectorRetriever
 from unstructured.partition.pdf import partition_pdf
-from airflow import DAG
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from datetime import datetime
 from PIL import Image
