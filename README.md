@@ -20,7 +20,6 @@ This is a **Generative AI** project designed to make it easier to understand and
 
 ## Requirements
 - Python 3.8+
-- Apache Airflow
 - Langchain
 - FAISS
 - OpenAI API
